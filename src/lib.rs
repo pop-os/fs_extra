@@ -348,6 +348,8 @@ where
             let dir_options = options.clone();
             let handler = |info: dir::TransitProcess| {
                 info_process.copied_bytes = copied_bytes + info.copied_bytes;
+                info_process.file_from = info.file_from.clone();
+                info_process.file_to = info.file_to.clone();
                 info_process.state = info.state;
                 let result = progress_handler(info_process.clone());
                 match result {
@@ -570,8 +572,6 @@ where
             info_process.file_total_bytes = item.metadata()?.len();
 
             let file_name = to.as_ref().join(info_process.file_name.clone());
-            info_process.file_from = Some(item.to_path_buf());
-            info_process.file_to = Some(file_name.to_path_buf());
             result += file::move_file(item, &file_name, &file_options)?;
         }
     }
@@ -668,6 +668,8 @@ where
             let dir_options = options.clone();
             let handler = |info: dir::TransitProcess| {
                 info_process.copied_bytes = copied_bytes + info.copied_bytes;
+                info_process.file_from = info.file_from.clone();
+                info_process.file_to = info.file_to.clone();
                 info_process.state = info.state;
                 let result = progress_handler(info_process.clone());
                 match result {
