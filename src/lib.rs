@@ -154,7 +154,7 @@ pub mod file;
 pub mod dir;
 
 use crate::error::*;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 /// Copies a list of directories and files to another place recursively. This function will
 /// also copy the permission bits of the original files to destination files (not for
@@ -232,6 +232,10 @@ pub struct TransitProcess {
     pub file_total_bytes: u64,
     /// Name of currently copied file.
     pub file_name: String,
+    /// Source path of currently copied file.
+    pub file_from: Option<PathBuf>,
+    /// Destination path of currently copied file.
+    pub file_to: Option<PathBuf>,
     /// Name of currently copied folder.
     pub dir_name: String,
     /// Transit state
@@ -246,6 +250,8 @@ impl Clone for TransitProcess {
             file_bytes_copied: self.file_bytes_copied,
             file_total_bytes: self.file_total_bytes,
             file_name: self.file_name.clone(),
+            file_from: self.file_from.clone(),
+            file_to: self.file_to.clone(),
             dir_name: self.dir_name.clone(),
             state: self.state.clone(),
         }
@@ -318,6 +324,8 @@ where
         file_bytes_copied: 0,
         file_total_bytes: 0,
         file_name: String::new(),
+        file_from: None,
+        file_to: None,
         dir_name: String::new(),
         state: dir::TransitState::Normal,
     };
@@ -371,6 +379,8 @@ where
 
             let copied_bytes = result;
             let file_name = to.as_ref().join(info_process.file_name.clone());
+            info_process.file_from = Some(item.to_path_buf());
+            info_process.file_to = Some(file_name.to_path_buf());
             let mut work = true;
 
             let mut result_copy: Result<u64>;
@@ -519,6 +529,8 @@ where
         file_bytes_copied: 0,
         file_total_bytes: 0,
         file_name: String::new(),
+        file_from: None,
+        file_to: None,
         dir_name: String::new(),
         state: dir::TransitState::Normal,
     };
@@ -557,6 +569,8 @@ where
             info_process.file_total_bytes = item.metadata()?.len();
 
             let file_name = to.as_ref().join(info_process.file_name.clone());
+            info_process.file_from = Some(item.to_path_buf());
+            info_process.file_to = Some(file_name.to_path_buf());
             result += file::move_file(item, &file_name, &file_options)?;
         }
     }
@@ -630,6 +644,8 @@ where
         file_bytes_copied: 0,
         file_total_bytes: 0,
         file_name: String::new(),
+        file_from: None,
+        file_to: None,
         dir_name: String::new(),
         state: dir::TransitState::Normal,
     };
@@ -683,6 +699,8 @@ where
 
             let copied_bytes = result;
             let file_name = to.as_ref().join(info_process.file_name.clone());
+            info_process.file_from = Some(item.to_path_buf());
+            info_process.file_to = Some(file_name.to_path_buf());
             let mut work = true;
 
             let mut result_copy: Result<u64>;

@@ -125,6 +125,10 @@ pub struct TransitProcess {
     pub file_total_bytes: u64,
     /// Name current copied file.
     pub file_name: String,
+    /// Source path of currently copied file.
+    pub file_from: Option<PathBuf>,
+    /// Destination path of currently copied file.
+    pub file_to: Option<PathBuf>,
     /// Transit state
     pub state: TransitState,
 }
@@ -167,6 +171,8 @@ impl Clone for TransitProcess {
             file_bytes_copied: self.file_bytes_copied,
             file_total_bytes: self.file_total_bytes,
             file_name: self.file_name.clone(),
+            file_from: self.file_from.clone(),
+            file_to: self.file_to.clone(),
             state: self.state.clone(),
         }
     }
@@ -911,6 +917,8 @@ where
         file_bytes_copied: 0,
         file_total_bytes: 0,
         file_name: String::new(),
+        file_from: None,
+        file_to: None,
         state: TransitState::Normal,
     };
 
@@ -939,6 +947,8 @@ where
             err!("Invalid file name", ErrorKind::InvalidFileName);
         }
 
+        info_process.file_from = Some(PathBuf::from(&file));
+        info_process.file_to = Some(path.to_path_buf());
         info_process.file_bytes_copied = 0;
         info_process.file_total_bytes = Path::new(&file).metadata()?.len();
 
@@ -1248,6 +1258,8 @@ where
         file_bytes_copied: 0,
         file_total_bytes: 0,
         file_name: String::new(),
+        file_from: None,
+        file_to: None,
         state: TransitState::Normal,
     };
 
@@ -1276,6 +1288,8 @@ where
             err!("Invalid file name", ErrorKind::InvalidFileName);
         }
 
+        info_process.file_from = Some(PathBuf::from(&file));
+        info_process.file_to = Some(path.to_path_buf());
         info_process.file_bytes_copied = 0;
         info_process.file_total_bytes = Path::new(&file).metadata()?.len();
 
