@@ -221,6 +221,7 @@ where
 }
 
 /// A structure which includes information about the current status of copying or moving a directory.
+#[derive(Debug)]
 pub struct TransitProcess {
     /// Already copied bytes
     pub copied_bytes: u64,

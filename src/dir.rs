@@ -114,6 +114,7 @@ pub struct DirContent {
 }
 
 /// A structure which include information about the current status of the copy or move directory.
+#[derive(Debug)]
 pub struct TransitProcess {
     /// Copied bytes on this time for folder
     pub copied_bytes: u64,
@@ -134,7 +135,7 @@ pub struct TransitProcess {
 }
 
 ///
-#[derive(Hash, Eq, PartialEq, Clone)]
+#[derive(Hash, Eq, PartialEq, Clone, Debug)]
 pub enum TransitState {
     /// Standard state.
     Normal,
